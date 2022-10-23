@@ -8,7 +8,7 @@ const startServer = async () => {
   try {
     //mongodb://localhost:27017/yt_soccer
     await mongoose.connect(
-      "mongodb+srv://academic:123654789@cluster0.5la9p.mongodb.net/yt_soccer?retryWrites=true&w=majority"
+      "mongodb://localhost:27017/yt_soccer"
     );
     console.log("Connected to db");
     app.listen(port, () => console.log("Server running on port", port));
