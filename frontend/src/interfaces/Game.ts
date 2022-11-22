@@ -3,7 +3,7 @@ export interface Game {
   name: string;
   address: string;
   numberOfPeople: number;
-  date: Date;
+  date: string;
   time: string;
   fieldNumber: number;
 }

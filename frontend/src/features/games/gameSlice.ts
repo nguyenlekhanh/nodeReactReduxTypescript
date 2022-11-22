@@ -28,6 +28,20 @@ export const getGames = createAsyncThunk<Game[]>(
   }
 );
 
+export const getGameById = createAsyncThunk<Game, string>(
+  "games/getGameById",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:10000/api/games/game/${id}`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const createGame = createAsyncThunk<Object, Game>(
   "games/createGame",
   async (data, thunkAPI) => {
@@ -35,6 +49,38 @@ export const createGame = createAsyncThunk<Object, Game>(
       const response = await axios.post(
         "http://localhost:10000/api/games/game",
         data
+      );
+      thunkAPI.dispatch(getGames());
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateGame = createAsyncThunk<Game, Game>(
+  "games/updateGame",
+  async (data, thunkAPI) => {
+    console.log(data);
+    try {
+      const response = await axios.put(
+        `http://localhost:10000/api/games/game/${data._id}`,
+        data
+      );
+      thunkAPI.dispatch(getGames());
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteGame = createAsyncThunk<string, string>(
+  "games/deleteGame",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:10000/api/games/game/${id}`
       );
       thunkAPI.dispatch(getGames());
       return response.data;
@@ -63,6 +109,21 @@ export const gameSlice = createSlice({
     builder.addCase(getGames.rejected, (state, action) => {
       state.loading = false;
       state.errors = action.payload;
+    });
+    builder.addCase(getGameById.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getGameById.fulfilled, (state, action) => {
+      state.singleGame = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(getGameById.rejected, (state, action) => {
+      state.loading = false;
+      state.errors = action.payload;
+    });
+    builder.addCase(updateGame.fulfilled, (state, action) => {
+      state.singleGame = action.payload;
+      state.loading = false;
     });
   },
 });
